@@ -11,10 +11,13 @@ namespace Area51
         public string Name { get; private set; }
 
         public string f { get; private set; }
+
         public string stringClearance { get; set; }
         private Elevator Elevator { get; set; }
 
         public enum Clearance {Confidential, Secret, TopSecret};
+
+        static object lockobj = new object();
 
         public Agent(string name)
         {
@@ -50,10 +53,13 @@ namespace Area51
         {
             Elevator = elevator;
             Console.WriteLine($"{Name} is waiting to enter the elevator at level {f}.");
-            Elevator.Enter(this);
-            Console.WriteLine($"{Name} has entered the elevator.");
-            GoToFloor();
-            Right();
+            lock (lockobj)
+            {
+                Elevator.Enter(this);
+                Console.WriteLine($"{Name} has entered the elevator.");
+                GoToFloor();
+                Right();
+            }
         }
 
     }
